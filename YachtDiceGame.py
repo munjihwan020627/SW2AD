@@ -13,8 +13,14 @@ class PersonCheck(QWidget):
 
     def initUI(self):
         okButton = QPushButton("OK")
-        Name = QLabel("Number:")
+        Number = QLabel("Number:")
         self.Nameline = QLineEdit()
+        lcd = QLCDNumber(self)
+        sld = QSlider(Qt.Horizontal, self)
+        sld.setRange(1,4)
+        lcd.display(1)
+        sld.valueChanged.connect(lcd.display)
+
         hbox = QHBoxLayout()
         hbox.addStretch(1)
         hbox.addWidget(okButton)
@@ -22,10 +28,10 @@ class PersonCheck(QWidget):
 
         hbox1 = QHBoxLayout()
         hbox1.addStretch(1)
-        hbox1.addWidget(Name)
-        hbox1.addWidget(self.Nameline)
+        hbox1.addWidget(Number)
+        hbox1.addWidget(lcd)
         hbox1.addStretch(1)
-        hbox1.addWidget(self.Nameline)
+        hbox1.addWidget(sld)
         vbox = QVBoxLayout()
         vbox.addStretch(1)
         vbox.addLayout(hbox1)
