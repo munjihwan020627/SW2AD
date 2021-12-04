@@ -54,7 +54,7 @@ class Yacht(QWidget):
         self.initUI()
 
     def initUI(self):
-        Result = QLabel("Result:")
+
         self.ResultText = QTextEdit()
 
         hbox1 = QHBoxLayout()
@@ -80,13 +80,18 @@ class Yacht(QWidget):
             self.DiceLine.setReadOnly(True)
 
         hbox4 = QHBoxLayout()
+        Result = QLabel("Result:")
+        rollbutton = QPushButton("roll")
+
         hbox4.addWidget(Result)
         hbox4.addStretch(1)
+        hbox4.addWidget(rollbutton)
         hbox5 = QHBoxLayout()
         hbox5.addWidget(self.ResultText)
         vbox = QVBoxLayout()
         vbox.addLayout(hbox1)
         vbox.addLayout(hbox2)
+
         vbox.addLayout(hbox4)
         vbox.addLayout(hbox5)
         vbox.addStretch(1)
