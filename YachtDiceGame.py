@@ -1,6 +1,7 @@
 import pickle
 import sys
 from PyQt5.QtWidgets import *
+import random
 
 from PyQt5.QtCore import Qt
 
@@ -60,7 +61,7 @@ class Yacht(QWidget):
 
         hbox1 = QHBoxLayout()
         hbox1.addStretch(1)
-        a = ??? # 현재 인자를 받는데에 오류 발생
+        a = random.randint(1,4) # 현재 인자를 받는데에 오류가 발생하므로 랜덤으로 인원수를 전달받음
         AddingHbox(a,hbox1)
 
         hbox2 = QHBoxLayout()
