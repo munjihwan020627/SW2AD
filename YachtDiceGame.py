@@ -1,44 +1,34 @@
 import pickle
 import sys
 from PyQt5.QtWidgets import *
+
 from PyQt5.QtCore import Qt
 
 
-
-class PersonCheck(QWidget):
-    global temp
+class PersonCheck(QDialog):
     def __init__(self):
         super().__init__()
         self.initUI()
 
     def initUI(self):
+
         okButton = QPushButton("OK")
         Number = QLabel("Number:")
-        self.Nameline = QLineEdit()
-        lcd = QLCDNumber(self)
-        sld = QSlider(Qt.Horizontal, self)
-        sld.setRange(1,4)
-        lcd.display(1)
-        sld.valueChanged.connect(lcd.display)
-
+        numberLine = QLineEdit()
         hbox = QHBoxLayout()
         hbox.addStretch(1)
         hbox.addWidget(okButton)
         okButton.clicked.connect(self.PUSHOK)
-
         hbox1 = QHBoxLayout()
         hbox1.addStretch(1)
         hbox1.addWidget(Number)
-        hbox1.addWidget(lcd)
         hbox1.addStretch(1)
-        hbox1.addWidget(sld)
+        hbox1.addWidget(numberLine)
         vbox = QVBoxLayout()
         vbox.addStretch(1)
         vbox.addLayout(hbox1)
         vbox.addLayout(hbox)
-
         self.setLayout(vbox)
-
         self.setGeometry(300, 300, 300, 150)
         self.setWindowTitle('인원 수 정하기')
         self.show()
@@ -47,24 +37,31 @@ class PersonCheck(QWidget):
         temp.show()
 
 
-class Yacht(QWidget):
 
+
+def AddingHbox(n,hbox):
+    for i in range(1,n+1):
+        Name = QLabel("Amount" + str(i) + ":")
+        Nameline = QLineEdit()
+        hbox.addWidget(Name)
+        hbox.addWidget(Nameline)
+        Nameline.setReadOnly(True)
+
+
+class Yacht(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
 
-    def initUI(self):
 
+
+    def initUI(self):
         self.ResultText = QTextEdit()
 
         hbox1 = QHBoxLayout()
         hbox1.addStretch(1)
-        for i in range(1, 4):  # 이 부분 인원수로 표현해야함
-            Name = QLabel("Amount" + str(i) + ":")
-            self.Nameline = QLineEdit()
-            hbox1.addWidget(Name)
-            hbox1.addWidget(self.Nameline)
-            self.Nameline.setReadOnly(True)
+        a = ??? # 현재 인자를 받는데에 오류 발생
+        AddingHbox(a,hbox1)
 
         hbox2 = QHBoxLayout()
         hbox2.addStretch(1)
@@ -82,12 +79,30 @@ class Yacht(QWidget):
         hbox4 = QHBoxLayout()
         Result = QLabel("Result:")
         rollbutton = QPushButton("roll")
-
+        self.ResultBox = QComboBox()
+        self.ResultBox.addItem('Aces')
+        self.ResultBox.addItem('Deuces')
+        self.ResultBox.addItem('Threes')
+        self.ResultBox.addItem('Fours')
+        self.ResultBox.addItem('Fives')
+        self.ResultBox.addItem('Sixes')
+        self.ResultBox.addItem('Choice')
+        self.ResultBox.addItem('4 of a kind')
+        self.ResultBox.addItem('Small Straight')
+        self.ResultBox.addItem('Large Straight')
+        self.ResultBox.addItem('Yacht')
+        addbutton = QPushButton("Add")
         hbox4.addWidget(Result)
         hbox4.addStretch(1)
         hbox4.addWidget(rollbutton)
+        hbox4.addStretch(1)
+        hbox4.addWidget(self.ResultBox)
+        hbox4.addStretch(1)
+        hbox4.addWidget(addbutton)
+
         hbox5 = QHBoxLayout()
         hbox5.addWidget(self.ResultText)
+
         vbox = QVBoxLayout()
         vbox.addLayout(hbox1)
         vbox.addLayout(hbox2)
@@ -99,8 +114,10 @@ class Yacht(QWidget):
         self.setGeometry(300, 300, 500, 250)
         self.setWindowTitle('Yacht Game')
 
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = PersonCheck()
     temp = Yacht()
+
     sys.exit(app.exec_())
