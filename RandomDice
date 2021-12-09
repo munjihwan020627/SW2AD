@@ -1,6 +1,6 @@
 
 def Get_Score(j, a, b, c, d, e):        #j는 add버튼을 눌렀을때의 resultbox의 keyindex예정
-    cnt = 0
+    cnt = 0                             #a,b,c,d,e는 5개의 주사위를 각각 인자로 받음    
     lst = [a, b, c, d, e]
     if j<6:
         for i in lst:
