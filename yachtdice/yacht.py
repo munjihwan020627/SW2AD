@@ -194,6 +194,8 @@ class Yacht(QWidget):
             row = self.scoreTable.currentRow()
             if row in [0, 7, 8, 15]:
                 return
+            if self.playerScore[column][row] != -1:
+                return
             self.playerScore[column][row] = int(self.scoreTable.item(row, column).text())
             self.scoreTable.item(row, column).setForeground(QColor(0, 0, 0))
             self.turnFine()
