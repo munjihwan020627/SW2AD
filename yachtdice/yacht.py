@@ -8,6 +8,7 @@ from scorecalc import scorecalc
 
 
 class Yacht(QWidget):
+    EXIT_CODE_REBOOT = -123
     def __init__(self):
         super().__init__()
         self.player = 0
@@ -16,6 +17,7 @@ class Yacht(QWidget):
     def initUI(self):
         self.setWindowTitle('Yacht Game')
         self.setGeometry(300, 100, 500, 800)
+        self.setWindowIcon(QIcon('dice1.png'))
 
         self.turn = 1
         self.currPlayer = 1
@@ -33,8 +35,6 @@ class Yacht(QWidget):
         self.showRollChance.setFont(font1)
 
         self.scoreTable = QTableWidget()
-
-
 
         self.getPlayer()
         self.setScoreTable()
@@ -158,14 +158,17 @@ class Yacht(QWidget):
 
 
     def roll(self):
-        if self.rollChance > 0:
-            for i in range(5):
-                if self.diceState[i] == 0:
-                    self.diceEye[i] = random.randrange(1, 7)
-            self.setScore()
-            self.setImage()
-            self.rollChance -= 1
-            self.showRollChance.setText("Roll Chance : " + str(self.rollChance))
+        if self.turn <= 12:
+            if self.rollChance > 0:
+                for i in range(5):
+                    if self.diceState[i] == 0:
+                        self.diceEye[i] = random.randrange(1, 7)
+                self.setScore()
+                self.setImage()
+                self.rollChance -= 1
+                self.showRollChance.setText("Roll Chance : " + str(self.rollChance))
+        else:
+            self.restart()
 
 
     def setImage(self):
@@ -238,14 +241,15 @@ class Yacht(QWidget):
 
         if self.currPlayer == self.player:
             self.turn += 1
+            if self.turn == 13:
+                self.gameover()
+                return
             self.scoreTable.setItem(0,0,QTableWidgetItem("Turn : " + str(self.turn) + " / 12"))
             self.scoreTable.item(0, 0).setBackground(QColor(153, 255, 255))
             self.currPlayer = 1
         else:
             self.currPlayer += 1
 
-        if self.turn == 13:
-            self.gameover()
 
 
     def lock(self):
@@ -264,11 +268,40 @@ class Yacht(QWidget):
         self.lockImage[lockNum].setPixmap(QPixmap(pixmap))
 
     def gameover(self):
-        pass
+        if self.player == 1:
+            item = self.scoreTable.item(15, 1)
+            value = item.text()
+            if int(value) >= 175:
+                QMessageBox.about(self, 'Win', 'Player Win!')
+            else:
+                QMessageBox.about(self, 'Lose', 'Player Lose!')
+        else:
+            getindex2 = [0]
+            for i in range(1, self.player + 1):
+                item = self.scoreTable.item(15, i)
+                value = item.text()
+                tmp = int(value)
+                getindex2.append(tmp)
+            a = max(getindex2)
+            print(a)
+            b_list = [i for i, value in enumerate(getindex2) if value == a]
+            print(b_list)
+            k = list(map(str, b_list))
+            print(k)
+            j = ', '.join(k)
+            QMessageBox.about(self, 'Win', 'Player ' + j + ' Win!!')
+        self.rollDice.setText("Restart")
+
+
+    def restart(self):
+        qApp.exit(self.EXIT_CODE_REBOOT)
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    temp = Yacht()
-    temp.show()
-    sys.exit(app.exec_())
+    currentExitCode = Yacht.EXIT_CODE_REBOOT
+    while currentExitCode == Yacht.EXIT_CODE_REBOOT:
+        app = QApplication(sys.argv)
+        w = Yacht()
+        w.show()
+        currentExitCode = app.exec_()
+        app = None
