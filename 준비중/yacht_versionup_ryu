@@ -148,7 +148,7 @@ class Yacht(QWidget):
             for i in range(5):
                 if self.lockButton[i].currentIndex() == 0:
                     self.diceEye[i] = random.randrange(1, 7)
-            self.diceEye.sort()
+
             self.setScore()
             self.setImage()
             self.rollChance -= 1
