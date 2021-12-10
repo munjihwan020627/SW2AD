@@ -42,7 +42,18 @@ class Yacht(QWidget):
         self.diceEye = [1, 1, 1, 1, 1]
         self.dice = [QLabel() for i in range(5)]
         self.diceState = [0 for i in range(5)]
+        self.lockImage = [QLabel() for i in range(5)]
+        pixmap = QPixmap("reroll.png")
+        pixmap = pixmap.scaledToWidth(50)
+        for i in range(5):
+            self.lockImage[i].setPixmap(QPixmap(pixmap))
+            self.lockImage[i].hide()
+
         self.lockButton = [QPushButton("Lock") for i in range(5)]
+        for i in range(5):
+            self.lockButton[i].clicked.connect(self.lock)
+            self.lockButton[i].setMaximumWidth(100)
+            self.lockButton[i].hide()
         for i in range(5):
             self.dice[i].resize(100, 100)
         self.rollDice = QPushButton("Roll")
@@ -68,6 +79,12 @@ class Yacht(QWidget):
         hbox0.addWidget(self.showRollChance)
         hbox0.addStretch(1)
 
+        hboxlock = QHBoxLayout()
+        for i in range(5):
+            hboxlock.addStretch(1)
+            hboxlock.addWidget(self.lockImage[i])
+        hboxlock.addStretch(1)
+
         hbox1 = QHBoxLayout()
         hbox1.addStretch(1)
         for i in range(5):
@@ -80,7 +97,7 @@ class Yacht(QWidget):
         for i in range(5):
             hbox2.addStretch(1)
             hbox2.addWidget(self.lockButton[i])
-        hbox2.addStretch(1)
+        hbox2.addStretch(2)
 
         hbox3 = QHBoxLayout()
         hbox3.addStretch(1)
@@ -89,8 +106,8 @@ class Yacht(QWidget):
 
         vbox2.addLayout(hbox0)
         vbox2.addStretch(1)
+        vbox2.addLayout(hboxlock)
         vbox2.addLayout(hbox1)
-        vbox2.addStretch(1)
         vbox2.addLayout(hbox2)
         vbox2.addStretch(1)
         vbox2.addLayout(hbox3)
@@ -143,18 +160,23 @@ class Yacht(QWidget):
     def roll(self):
         if self.rollChance > 0:
             for i in range(5):
-                self.diceEye[i] = random.randrange(1, 7)
-            self.diceEye.sort()
+                if self.diceState[i] == 0:
+                    self.diceEye[i] = random.randrange(1, 7)
             self.setScore()
             self.setImage()
             self.rollChance -= 1
             self.showRollChance.setText("Roll Chance : " + str(self.rollChance))
+
 
     def setImage(self):
         for i in range(5):
             pixmap = QPixmap("dice"+str(self.diceEye[i])+".png")
             pixmap = pixmap.scaledToWidth(100)
             self.dice[i].setPixmap(QPixmap(pixmap))
+            self.dice[i].show()
+            self.lockImage[i].show()
+            self.lockButton[i].show()
+
 
     def setScore(self):
         for i in range(1, 16):
@@ -162,6 +184,7 @@ class Yacht(QWidget):
                 if not(i in [7, 8, 15]):
                     self.scoreTable.setItem(i, self.currPlayer, QTableWidgetItem(str(scorecalc(self.diceEye, self.scoreTable.item(i, 0).text()))))
                     self.scoreTable.item(i, self.currPlayer).setForeground(QColor(180, 180, 180))
+
 
     def scoreSelect(self):
         if self.rollChance < 3:
@@ -174,6 +197,7 @@ class Yacht(QWidget):
             self.playerScore[column][row] = int(self.scoreTable.item(row, column).text())
             self.scoreTable.item(row, column).setForeground(QColor(0, 0, 0))
             self.turnFine()
+
 
     def turnFine(self):
         self.rollChance = 3
@@ -202,8 +226,13 @@ class Yacht(QWidget):
                 self.scoreTable.setItem(i, self.currPlayer, QTableWidgetItem(""))
 
         for i in range(5):
-            pixmap = QPixmap("")
-            self.dice[i].setPixmap(QPixmap(pixmap))
+            self.dice[i].hide()
+            pixmap = QPixmap("reroll.png")
+            pixmap = pixmap.scaledToWidth(50)
+            self.lockImage[i].setPixmap(QPixmap(pixmap))
+            self.lockImage[i].hide()
+            self.lockButton[i].hide()
+            self.diceState[i] = 0
 
         if self.currPlayer == self.player:
             self.turn += 1
@@ -214,7 +243,27 @@ class Yacht(QWidget):
             self.currPlayer += 1
 
         if self.turn == 13:
-            pass
+            self.gameover()
+
+
+    def lock(self):
+        button = self.sender()
+        for i in range(5):
+            if button == self.lockButton[i]:
+                lockNum = i
+        if self.diceState[lockNum] == 0:
+            self.diceState[lockNum] = 1
+            pixmap = QPixmap("lock.png")
+            pixmap = pixmap.scaledToWidth(50)
+        else:
+            self.diceState[lockNum] = 0
+            pixmap = QPixmap("reroll.png")
+            pixmap = pixmap.scaledToWidth(50)
+        self.lockImage[lockNum].setPixmap(QPixmap(pixmap))
+
+    def gameover(self):
+        pass
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
