@@ -224,16 +224,20 @@ class Yacht(QWidget):
                 if int(value)>90:
                     QMessageBox.about(self, 'Win', 'Player Win!')
             else:
-                scoretemp =0
-                getindex = 0
+                getindex2 = [0]
                 for i in range(1,self.player+1):
                     item = self.scoreTable.item(15,i)
                     value = item.text()
                     tmp = int(value)
-                    if scoretemp< tmp:
-                        scoretemp = tmp
-                        getindex = i
-                QMessageBox.about(self, 'Win', "Player"+str(getindex)+"Win!!")
+                    getindex2.append(tmp)
+                a = max(getindex2)
+                print(a)
+                b_list = [i for i, value in enumerate(getindex2) if value == a]
+                print(b_list)
+                k = list(map(str,b_list))
+                print(k)
+                j = ','.join(k)
+                QMessageBox.about(self, 'Win', 'Player'+j+'Win!!')
 
 
 if __name__ == '__main__':
